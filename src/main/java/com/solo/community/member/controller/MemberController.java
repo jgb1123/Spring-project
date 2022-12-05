@@ -28,7 +28,7 @@ public class MemberController {
     public ResponseEntity postMember(@RequestBody MemberPostDto memberPostDto) {
         Member member = memberMapper.memberPostDtoToMember(memberPostDto);
         Member savedMember = memberService.createMember(member);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{memberId}")
