@@ -29,14 +29,15 @@ public class MemberService {
     }
 
     public Page<Member> findMembers(int page, int size) {
-        return memberRepository.findAll(PageRequest.of(page, size,
+        return memberRepository.findAll(PageRequest.of(page-1, size,
                 Sort.by("nickname").ascending()));
     }
 
-    public void updateMember(Long memberId, Member modifiedMember) {
+    public Member updateMember(Long memberId, Member modifiedMember) {
         Member foundMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         foundMember.changeInfo(modifiedMember);
+        return foundMember;
     }
 
     public void deleteMember(Long memberId) {
