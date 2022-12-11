@@ -31,4 +31,14 @@ public class Board extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
+
+    public void changeMember(Member member) {
+        this.member = member;
+    }
+
+    public void changeInfo(Board board) {
+        if(board.getBoardTitle() != null) this.boardTitle = board.getBoardTitle();
+        if(board.getBoardContent() != null) this.boardContent = board.getBoardContent();
+    }
+
 }
