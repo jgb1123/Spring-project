@@ -4,19 +4,14 @@ import com.solo.community.exception.BusinessLogicException;
 import com.solo.community.exception.ExceptionCode;
 import com.solo.community.member.entity.Member;
 import com.solo.community.member.repository.MemberRepository;
-import com.solo.community.security.JwtTokenProvider;
-import com.solo.community.security.TokenInfo;
+import com.solo.community.security.jwt.JwtTokenizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -24,7 +19,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenizer jwtTokenizer;
 
     public Member createMember(Member member) {
         return memberRepository.save(member);
@@ -49,12 +44,5 @@ public class MemberService {
 
     public void deleteMember(Long memberId) {
         memberRepository.deleteById(memberId);
-    }
-
-    public TokenInfo login(String email, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-        Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        return jwtTokenProvider.generateToken(authenticationToken);
-
     }
 }

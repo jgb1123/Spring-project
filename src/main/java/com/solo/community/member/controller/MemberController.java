@@ -2,14 +2,12 @@ package com.solo.community.member.controller;
 
 import com.solo.community.dto.MultiResponseDto;
 import com.solo.community.dto.SingleResponseDto;
-import com.solo.community.member.dto.MemberLoginDto;
 import com.solo.community.member.dto.MemberPatchDto;
 import com.solo.community.member.dto.MemberPostDto;
 import com.solo.community.member.dto.MemberResponseDto;
 import com.solo.community.member.entity.Member;
 import com.solo.community.member.mapper.MemberMapper;
 import com.solo.community.member.service.MemberService;
-import com.solo.community.security.TokenInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -25,16 +23,6 @@ public class MemberController {
 
     private final MemberMapper memberMapper;
     private final MemberService memberService;
-
-    @PostMapping("/login")
-    public TokenInfo login(@RequestBody MemberLoginDto memberLoginDto) {
-        return memberService.login(memberLoginDto.getEmail(), memberLoginDto.getPassword());
-    }
-
-    @PostMapping("/test")
-    public String test() {
-        return "success";
-    }
 
     @PostMapping
     public ResponseEntity postMember(@RequestBody MemberPostDto memberPostDto) {
