@@ -26,19 +26,19 @@ public class Member implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String phone;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String nickname;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -88,5 +88,9 @@ public class Member implements UserDetails {
         if(modifiedMember.getPassword() != null) this.password = modifiedMember.getPassword();
         if(modifiedMember.getPhone() != null) this.phone = modifiedMember.getPhone();
         if(modifiedMember.getNickname() != null) this.nickname = modifiedMember.getNickname();
+    }
+
+    public void changeEmail(String email) {
+        this.email = email;
     }
 }
