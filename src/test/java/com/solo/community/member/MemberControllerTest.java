@@ -61,7 +61,6 @@ public class MemberControllerTest {
                 new MemberPostDto(
                         "홍길동",
                         "hgd@gmail.com",
-                        "12345678",
                         "010-1234-5678",
                         "hgd123"
                 );
@@ -72,7 +71,6 @@ public class MemberControllerTest {
                         1L,
                         "홍길동",
                         "hgd@gmail.com",
-                        "12345678",
                         "010-1234-5678",
                         "hgd123"
                 );
@@ -111,7 +109,6 @@ public class MemberControllerTest {
                         memberId,
                         "홍길동",
                         "hgd@gmail.com",
-                        "12345678",
                         "010-1234-5678",
                         "hgd123"
                 );
@@ -129,7 +126,6 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.data.memberId").value(responseDto.getMemberId()))
                 .andExpect(jsonPath("$.data.name").value(responseDto.getName()))
                 .andExpect(jsonPath("$.data.email").value(responseDto.getEmail()))
-                .andExpect(jsonPath("$.data.password").value(responseDto.getPassword()))
                 .andExpect(jsonPath("$.data.phone").value(responseDto.getPhone()))
                 .andExpect(jsonPath("$.data.nickname").value(responseDto.getNickname()))
                 .andDo(document("get-member",
@@ -211,14 +207,12 @@ public class MemberControllerTest {
         MemberPatchDto patchDto = new MemberPatchDto(
                 "홍길동",
                 "hgd@gmail.com",
-                "12345678",
                 "010-1234-5678",
                 "hgd123"
         );
         String content = gson.toJson(patchDto);
 
         given(memberMapper.memberPatchDtoToMember(Mockito.any(MemberPatchDto.class))).willReturn(new Member());
-//        given(memberService.updateMember(1L, Mockito.any(Member.class)))
 
         ResultActions actions = mockMvc.perform(
                 patch("/api/v1/member/{memberId}", memberId)

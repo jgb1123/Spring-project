@@ -39,15 +39,17 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         System.out.println("# Redirect to Frontend");
         var oAuth2User = (OAuth2User)authentication.getPrincipal();
         String email = String.valueOf(oAuth2User.getAttributes().get("email"));
+        String name = String.valueOf(oAuth2User.getAttributes().get("name"));
+
         List<String> authorities = customAuthorityUtils.createRoles(email);
 
-        saveMember(email);
+        saveMember(email, name);
         redirect(request, response, email, authorities);
     }
 
-    private void saveMember(String email) {
+    private void saveMember(String email, String name) {
         Member member = new Member();
-        member.changeEmail(email);
+        member.changeSignUpInfo(email, name);
         memberService.createMember(member);
     }
 
