@@ -33,9 +33,6 @@ public class Member implements UserDetails {
     private String email;
 
     @Column
-    private String password;
-
-    @Column
     private String phone;
 
     @Column
@@ -53,13 +50,13 @@ public class Member implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return email;
+    public String getPassword() {
+        return null;
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return email;
     }
 
     @Override
@@ -85,12 +82,16 @@ public class Member implements UserDetails {
     public void changeInfo(Member modifiedMember) {
         if(modifiedMember.getName() != null) this.name = modifiedMember.getName();
         if(modifiedMember.getEmail() != null) this.email = modifiedMember.getEmail();
-        if(modifiedMember.getPassword() != null) this.password = modifiedMember.getPassword();
         if(modifiedMember.getPhone() != null) this.phone = modifiedMember.getPhone();
         if(modifiedMember.getNickname() != null) this.nickname = modifiedMember.getNickname();
     }
 
-    public void changeEmail(String email) {
+    public void changeSignUpInfo(String email, String name) {
         this.email = email;
+        this.name = name;
+    }
+
+    public void changeRoles(List<String> roles) {
+        this.roles = roles;
     }
 }

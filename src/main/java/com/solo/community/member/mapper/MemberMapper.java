@@ -16,7 +16,6 @@ public class MemberMapper {
                 .memberId(0L)
                 .name(memberPostDto.getName())
                 .email(memberPostDto.getEmail())
-                .password(memberPostDto.getPassword())
                 .phone(memberPostDto.getPhone())
                 .nickname(memberPostDto.getNickname())
                 .build();
@@ -26,7 +25,6 @@ public class MemberMapper {
         return Member.builder()
                 .name(memberPatchDto.getName())
                 .email(memberPatchDto.getEmail())
-                .password(memberPatchDto.getPassword())
                 .phone(memberPatchDto.getPhone())
                 .nickname(memberPatchDto.getNickname())
                 .build();
@@ -37,7 +35,6 @@ public class MemberMapper {
                 .memberId(member.getMemberId())
                 .name(member.getName())
                 .email(member.getEmail())
-                .password(member.getPassword())
                 .phone(member.getPhone())
                 .nickname(member.getNickname())
                 .build();

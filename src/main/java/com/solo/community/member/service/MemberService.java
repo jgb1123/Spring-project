@@ -5,6 +5,7 @@ import com.solo.community.exception.ExceptionCode;
 import com.solo.community.member.entity.Member;
 import com.solo.community.member.repository.MemberRepository;
 import com.solo.community.security.jwt.JwtTokenizer;
+import com.solo.community.security.utils.CustomAuthorityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,15 +14,18 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final JwtTokenizer jwtTokenizer;
+    private final CustomAuthorityUtils customAuthorityUtils;
 
     public Member createMember(Member member) {
+        List<String> roles = customAuthorityUtils.createRoles(member.getEmail());
+        member.changeRoles(roles);
         return memberRepository.save(member);
     }
 
