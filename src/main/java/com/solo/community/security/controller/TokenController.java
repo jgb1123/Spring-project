@@ -3,6 +3,7 @@ package com.solo.community.security.controller;
 import com.solo.community.member.entity.Member;
 import com.solo.community.member.service.MemberService;
 import com.solo.community.security.jwt.JwtTokenizer;
+import com.solo.community.security.jwt.Tokens;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +29,15 @@ public class TokenController {
     private final MemberService memberService;
     @GetMapping("/api/v1/token/refresh")
     public String refreshAuth(HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("Refresh");
-        Map<String, Object> claims = jwtTokenizer.getClaims(token, jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey())).getBody();
-        String email = (String) claims.get("email");
-
+        String token = request.getHeader("RefreshToken");
+        String email = jwtTokenizer.getClaims(token, jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey()))
+                .getBody()
+                .getSubject();
         Member member = memberService.findVerifiedMember(email);
         List<String> roles = member.getRoles();
-        Map<String, Object> newClaims = new HashMap<>();
-        claims.put("email", email);
-        claims.put("roles", roles);
-        String subject = email;
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-        String accessToken = jwtTokenizer.generateAccessToken(newClaims, subject, expiration, base64EncodedSecretKey);
-        return accessToken;
+        Tokens tokens = jwtTokenizer.generateTokens(email, roles);
+        response.addHeader("AccessToken", tokens.getAccessToken());
+        response.addHeader("RefreshToken", tokens.getRefreshToken());
+        return tokens.toString();
     }
 }

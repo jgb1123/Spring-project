@@ -32,30 +32,30 @@ public class JwtTokenizer {
         return Encoders.BASE64.encode(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(Map<String, Object> claims,
-                                      String subject,
-                                      Date expiration,
-                                      String base64EncodedSecretKey) {
+    public Tokens generateTokens(String email, List<String> authorities) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", email);
+        claims.put("roles", authorities);
+        String subject = email;
+        Date accessExpiration = getTokenExpiration(accessTokenExpirationMinutes);
+        Date refreshExpiration = getTokenExpiration(refreshTokenExpirationMinutes);
+        String base64EncodedSecretKey = encodeBase64SecretKey(secretKey);
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(Calendar.getInstance().getTime())
-                .setExpiration(expiration)
-                .signWith(key)
-                .compact();
-    }
-
-    public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey) {
-        Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
-
-        return Jwts.builder()
-                .setSubject(subject)
-                .setIssuedAt(Calendar.getInstance().getTime())
-                .setExpiration(expiration)
-                .signWith(key)
-                .compact();
+        return new Tokens(
+                Jwts.builder()
+                        .setClaims(claims)
+                        .setSubject(subject)
+                        .setIssuedAt(Calendar.getInstance().getTime())
+                        .setExpiration(accessExpiration)
+                        .signWith(key)
+                        .compact(),
+                Jwts.builder()
+                        .setSubject(subject)
+                        .setIssuedAt(Calendar.getInstance().getTime())
+                        .setExpiration(refreshExpiration)
+                        .signWith(key)
+                        .compact());
     }
 
     // 검증 후, Claims을 반환
