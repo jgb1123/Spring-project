@@ -8,10 +8,12 @@ import com.solo.community.board.mapper.BoardMapper;
 import com.solo.community.board.service.BoardService;
 import com.solo.community.dto.MultiResponseDto;
 import com.solo.community.dto.SingleResponseDto;
+import com.solo.community.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,9 +26,10 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping
-    public ResponseEntity postBoard(@RequestBody BoardPostDto boardPostDto) {
+    public ResponseEntity postBoard(@RequestBody BoardPostDto boardPostDto,
+                                    @AuthenticationPrincipal String email) {
         Board board = boardMapper.boardPostDtoToBoard(boardPostDto);
-        Board savedBoard = boardService.createBoard(boardPostDto.getMemberId(), board);
+        Board savedBoard = boardService.createBoard(email, board);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     
@@ -48,15 +51,17 @@ public class BoardController {
     
     @PatchMapping("/{boardId}")
     public ResponseEntity patchBoard(@PathVariable Long boardId,
-                                     @RequestBody BoardPatchDto boardPatchDto) {
+                                     @RequestBody BoardPatchDto boardPatchDto,
+                                     @AuthenticationPrincipal String email) {
         Board modifiedBoard = boardMapper.boardPatchDtoToBoard(boardPatchDto);
-        boardService.updateBoard(boardId, modifiedBoard);
+        boardService.updateBoard(boardId, modifiedBoard, email);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity deleteBoard(@PathVariable Long boardId) {
-        boardService.deleteBoard(boardId);
+    public ResponseEntity deleteBoard(@PathVariable Long boardId,
+                                      @AuthenticationPrincipal String email) {
+        boardService.deleteBoard(boardId, email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

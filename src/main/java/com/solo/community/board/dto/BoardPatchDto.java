@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class BoardPatchDto {
     private String boardTitle;
     private String boardContent;
-    private Long memberId;
 }

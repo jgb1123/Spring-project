@@ -23,8 +23,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberService memberService;
 
-    public Board createBoard(Long memberId, Board board) {
-        Member foundMember = memberService.findMember(memberId);
+    public Board createBoard(String email, Board board) {
+        Member foundMember = memberService.findVerifiedMember(email);
         board.changeMember(foundMember);
         return boardRepository.save(board);
     }
@@ -38,14 +38,24 @@ public class BoardService {
         return boardRepository.findAll(PageRequest.of(page - 1, size, Sort.by("boardId").descending()));
     }
 
-    public Board updateBoard(Long boardId, Board modifiedBoard) {
+    public Board updateBoard(Long boardId, Board modifiedBoard, String email) {
         Board foundBoard = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
+
+        if(!foundBoard.getMember().getEmail().equals(email))
+            throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_BOARD);
+
         foundBoard.changeInfo(modifiedBoard);
         return foundBoard;
     }
 
-    public void deleteBoard(Long boardId) {
-        boardRepository.deleteById(boardId);
+    public void deleteBoard(Long boardId, String email) {
+        Board foundBoard = boardRepository.findById(boardId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
+
+        if(!foundBoard.getMember().getEmail().equals(email))
+            throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_BOARD);
+
+        boardRepository.delete(foundBoard);
     }
 }
