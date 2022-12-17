@@ -3,6 +3,7 @@ package com.solo.community.security.handler;
 import com.solo.community.member.entity.Member;
 import com.solo.community.member.service.MemberService;
 import com.solo.community.security.jwt.JwtTokenizer;
+import com.solo.community.security.jwt.Tokens;
 import com.solo.community.security.utils.CustomAuthorityUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -45,9 +46,8 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         if(!existMemberCheck(email)){
             saveMember(email, name);
         }
-        String accessToken = delegateAccessToken(email, authorities);
-        String refreshToken = delegateRefreshToken(email);
-        writeTokenResponse(response, accessToken, refreshToken);
+        Tokens tokens = jwtTokenizer.generateTokens(email, authorities);
+        writeTokenResponse(response, tokens.getAccessToken(), tokens.getRefreshToken());
     }
 
     private boolean existMemberCheck(String email) {
@@ -58,31 +58,6 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         Member member = new Member();
         member.changeSignUpInfo(email, name);
         memberService.createMember(member);
-    }
-
-    private String delegateAccessToken(String email, List<String> authorities) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", email);
-        claims.put("roles", authorities);
-
-        String subject = email;
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
-
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-
-        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
-
-        return accessToken;
-    }
-
-    private String delegateRefreshToken(String email) {
-        String subject = email;
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-
-        String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
-
-        return refreshToken;
     }
 
     private void writeTokenResponse(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
