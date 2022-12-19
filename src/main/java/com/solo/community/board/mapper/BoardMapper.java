@@ -30,6 +30,7 @@ public class BoardMapper {
                 .boardId(board.getBoardId())
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
+                .view(board.getView())
                 .modifiedAt(board.getModifiedAt())
                 .createdAt(board.getCreatedAt())
                 .nickname(board.getMember().getNickname())
