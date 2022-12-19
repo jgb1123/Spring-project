@@ -15,6 +15,7 @@ public class BoardResponseDto {
     private Long boardId;
     private String boardTitle;
     private String boardContent;
+    private int view;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private String nickname;

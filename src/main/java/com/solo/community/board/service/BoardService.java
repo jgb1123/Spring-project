@@ -35,10 +35,11 @@ public class BoardService {
     }
 
     public Page<Board> findBoards(int page, int size) {
-        return boardRepository.findAll(PageRequest.of(page - 1, size, Sort.by("boardId").descending()));
+        return boardRepository.findAll(PageRequest.of(page - 1, size, Sort.by("boardId").ascending()));
     }
 
     public Board updateBoard(Long boardId, Board modifiedBoard, String email) {
+        memberService.findVerifiedMember(email);
         Board foundBoard = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
 
@@ -50,6 +51,7 @@ public class BoardService {
     }
 
     public void deleteBoard(Long boardId, String email) {
+        memberService.findVerifiedMember(email);
         Board foundBoard = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
 
