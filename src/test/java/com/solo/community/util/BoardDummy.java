@@ -10,15 +10,16 @@ import com.solo.community.member.dto.MemberResponseDto;
 import com.solo.community.member.entity.Member;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface BoardDummy {
     static Board createBoard1() {
-        return new Board(1L, "글제목1", "글내용1", 0, null);
+        return new Board(1L, "글제목1", "글내용1", 0, null, new ArrayList<>());
     }
 
     static Board createBoard2() {
-        return new Board(2L, "글제목2", "글내용2", 0, null);
+        return new Board(2L, "글제목2", "글내용2", 0, null, new ArrayList<>());
     }
 
     static BoardPostDto createPostDto() {
