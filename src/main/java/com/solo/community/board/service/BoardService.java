@@ -13,8 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,8 +28,7 @@ public class BoardService {
     }
 
     public Board findBoard(Long boardId) {
-        return boardRepository.findById(boardId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
+        return findVerifiedBoard(boardId);
     }
 
     public Page<Board> findBoards(int page, int size) {
@@ -40,24 +37,27 @@ public class BoardService {
 
     public Board updateBoard(Long boardId, Board modifiedBoard, String email) {
         memberService.findVerifiedMember(email);
-        Board foundBoard = boardRepository.findById(boardId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
-
-        if(!foundBoard.getMember().getEmail().equals(email))
-            throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_BOARD);
-
+        Board foundBoard = findVerifiedBoard(boardId);
+        emailConfirm(email, foundBoard);
         foundBoard.changeInfo(modifiedBoard);
         return foundBoard;
     }
 
     public void deleteBoard(Long boardId, String email) {
         memberService.findVerifiedMember(email);
-        Board foundBoard = boardRepository.findById(boardId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
-
-        if(!foundBoard.getMember().getEmail().equals(email))
-            throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_BOARD);
-
+        Board foundBoard = findVerifiedBoard(boardId);
+        emailConfirm(email, foundBoard);
         boardRepository.delete(foundBoard);
+    }
+
+    public Board findVerifiedBoard(Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
+    }
+
+    private void emailConfirm(String email, Board foundBoard) {
+        if(!foundBoard.getMember().getEmail().equals(email)) {
+            throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_BOARD);
+        }
     }
 }

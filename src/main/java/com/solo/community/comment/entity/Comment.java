@@ -40,4 +40,12 @@ public class Comment extends BaseTimeEntity {
             board.addComment(this);
         }
     }
+
+    public void changeMember(Member member) {
+        this.member = member;
+    }
+
+    public void changeInfo(Comment comment) {
+        if(comment.getCommentContent() != null) this.commentContent = comment.getCommentContent();
+    }
 }
