@@ -43,7 +43,6 @@ public class BoardServiceTest {
         //given
         Board board = BoardDummy.createBoard1();
         Member member = MemberDummy.createMember1();
-        board.changeMember(member);
         given(boardRepository.save(Mockito.any(Board.class)))
                 .willReturn(board);
         given(memberService.findVerifiedMember(Mockito.anyString()))
@@ -74,6 +73,7 @@ public class BoardServiceTest {
         Board board2 = BoardDummy.createBoard2();
         given(boardRepository.findAll(PageRequest.of(0, 10, Sort.by("boardId").ascending())))
                 .willReturn(new PageImpl<>(List.of(board1, board2), PageRequest.of(0, 10, Sort.by("boardId").ascending()), 2));
+        //when
         Page<Board> pageBoards = boardService.findBoards(1, 10);
         //then
         assertThat(pageBoards.getContent()).contains(board1);

@@ -3,6 +3,7 @@ package com.solo.community.member;
 import com.solo.community.member.entity.Member;
 import com.solo.community.member.repository.MemberRepository;
 import com.solo.community.member.service.MemberService;
+import com.solo.community.security.utils.CustomAuthorityUtils;
 import com.solo.community.util.MemberDummy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,9 @@ public class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
+    @Mock
+    private CustomAuthorityUtils customAuthorityUtils;
+
 
     @Test
     public void createMemberTest() {
@@ -36,6 +40,8 @@ public class MemberServiceTest {
         Member member1 = MemberDummy.createMember1();
         given(memberRepository.save(Mockito.any(Member.class)))
                 .willReturn(member1);
+        given(customAuthorityUtils.createRoles(Mockito.anyString()))
+                .willReturn(List.of("ADMIN", "USER"));
         //when
         Member savedMember = memberService.createMember(member1);
         //then
