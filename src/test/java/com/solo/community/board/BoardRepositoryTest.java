@@ -56,11 +56,12 @@ public class BoardRepositoryTest {
         Board savedBoard1 = boardRepository.save(board1);
         Board savedBoard2 = boardRepository.save(board2);
         //when
-        Page<Board> pageBoards = boardRepository.findAll(PageRequest.of(0, 10, Sort.by("boardId").ascending()));
-        List<Board> content = pageBoards.getContent();
+        Page<Board> pageBoards = boardRepository.findAll(PageRequest.of(0, 10,
+                Sort.by("boardId").ascending()));
+        List<Board> boards = pageBoards.getContent();
         //then
-        assertThat(content).contains(savedBoard1);
-        assertThat(content).contains(savedBoard2);
+        assertThat(boards).contains(savedBoard1);
+        assertThat(boards).contains(savedBoard2);
     }
 
     @Test
@@ -85,7 +86,7 @@ public class BoardRepositoryTest {
         Board board = BoardDummy.createBoard1();
         Board savedBoard = boardRepository.save(board);
         //when
-        boardRepository.deleteById(savedBoard.getBoardId());
+        boardRepository.delete(savedBoard);
         //then
         assertThat(boardRepository.findById(savedBoard.getBoardId()).isPresent()).isFalse();
     }

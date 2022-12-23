@@ -32,7 +32,7 @@ public class CommentService {
     }
 
     public Page<Comment> findComments(Long boardId, int page, int size) {
-        Board foundBoard = boardService.findBoard(boardId);
+        Board foundBoard = boardService.findVerifiedBoard(boardId);
 
         return commentRepository.findAllByBoard(foundBoard, PageRequest.of(page - 1, size,
                 Sort.by("createdAt").ascending()));
@@ -46,7 +46,6 @@ public class CommentService {
     }
 
     public void deleteComment(String email, Long commentId) {
-        Member foundMember = memberService.findVerifiedMember(email);
         Comment foundComment = findVerifiedComment(commentId);
         emailConfirm(email, foundComment);
         commentRepository.delete(foundComment);
