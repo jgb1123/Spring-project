@@ -51,6 +51,9 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.POST, "/api/v1/board").hasAnyRole("ADMIN", "USER")
                         .antMatchers(HttpMethod.PATCH, "/api/v1/board/**").hasAnyRole("ADMIN", "USER")
                         .antMatchers(HttpMethod.DELETE, "/api/v1/board/**").hasAnyRole("ADMIN", "USER")
+                        .antMatchers(HttpMethod.POST, "/api/v1/comment/**").hasAnyRole("ADMIN", "USER")
+                        .antMatchers(HttpMethod.PATCH, "/api/v1/comment/**").hasAnyRole("ADMIN", "USER")
+                        .antMatchers(HttpMethod.DELETE, "/api/v1/comment/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
