@@ -85,6 +85,6 @@ public class MemberServiceTest {
         Member updatedMember = memberService.updateMember(1L, modifiedMember);
 
         //then
-        assertThat(modifiedMember.getEmail()).isEqualTo(updatedMember.getEmail());
+        assertThat(modifiedMember.getNickname()).isEqualTo(updatedMember.getNickname());
     }
 }

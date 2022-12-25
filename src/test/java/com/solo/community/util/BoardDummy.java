@@ -4,14 +4,9 @@ import com.solo.community.board.dto.BoardPatchDto;
 import com.solo.community.board.dto.BoardPostDto;
 import com.solo.community.board.dto.BoardResponseDto;
 import com.solo.community.board.entity.Board;
-import com.solo.community.member.dto.MemberPatchDto;
-import com.solo.community.member.dto.MemberPostDto;
-import com.solo.community.member.dto.MemberResponseDto;
-import com.solo.community.member.entity.Member;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 public interface BoardDummy {
     static Board createBoard1() {

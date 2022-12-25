@@ -80,8 +80,6 @@ public class Member implements UserDetails {
     }
 
     public void changeInfo(Member modifiedMember) {
-        if(modifiedMember.getName() != null) this.name = modifiedMember.getName();
-        if(modifiedMember.getEmail() != null) this.email = modifiedMember.getEmail();
         if(modifiedMember.getPhone() != null) this.phone = modifiedMember.getPhone();
         if(modifiedMember.getNickname() != null) this.nickname = modifiedMember.getNickname();
     }

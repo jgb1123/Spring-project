@@ -3,7 +3,6 @@ package com.solo.community.member;
 import com.google.gson.Gson;
 import com.solo.community.member.controller.MemberController;
 import com.solo.community.member.dto.MemberPatchDto;
-import com.solo.community.member.dto.MemberPostDto;
 import com.solo.community.member.dto.MemberResponseDto;
 import com.solo.community.member.entity.Member;
 import com.solo.community.member.mapper.MemberMapper;
@@ -22,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,6 +36,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,53 +56,9 @@ public class MemberControllerTest {
     @Autowired
     private Gson gson;
 
-    @Test
-    public void postMemberTest() throws Exception {
-        MemberPostDto postDto =
-                new MemberPostDto(
-                        "홍길동",
-                        "hgd@gmail.com",
-                        "010-1234-5678",
-                        "hgd123"
-                );
-        String content = gson.toJson(postDto);
-
-        MemberResponseDto responseDto =
-                new MemberResponseDto(
-                        1L,
-                        "홍길동",
-                        "hgd@gmail.com",
-                        "010-1234-5678",
-                        "hgd123"
-                );
-        given(memberMapper.memberPostDtoToMember(Mockito.any(MemberPostDto.class))).willReturn(new Member());
-        given(memberService.createMember(Mockito.any(Member.class))).willReturn(new Member());
-
-        ResultActions actions = mockMvc.perform(
-                post("/api/v1/member")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-
-        actions
-                .andExpect(status().isCreated())
-                .andDo(document("post-member",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                List.of(
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"),
-                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("휴대폰 번호"),
-                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("별명")
-                                )
-                        )
-                ));
-    }
 
     @Test
+    @WithMockUser
     public void getMemberTest() throws Exception {
         Long memberId = 1L;
         MemberResponseDto responseDto =
@@ -139,7 +96,6 @@ public class MemberControllerTest {
                                         fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                         fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
                                         fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("data.password").type(JsonFieldType.STRING).description("비밀번호"),
                                         fieldWithPath("data.phone").type(JsonFieldType.STRING).description("휴대폰 번호"),
                                         fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("별명")
                                 )
@@ -148,6 +104,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void getMembersTest() throws Exception {
         int page = 1;
         int size = 10;
@@ -188,7 +145,6 @@ public class MemberControllerTest {
                                         fieldWithPath("data[].memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                         fieldWithPath("data[].name").type(JsonFieldType.STRING).description("이름"),
                                         fieldWithPath("data[].email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("data[].password").type(JsonFieldType.STRING).description("비밀번호"),
                                         fieldWithPath("data[].phone").type(JsonFieldType.STRING).description("휴대폰 번호"),
                                         fieldWithPath("data[].nickname").type(JsonFieldType.STRING).description("별명"),
 
@@ -202,11 +158,10 @@ public class MemberControllerTest {
                 ));
     }
     @Test
+    @WithMockUser
     public void patchMemberTest() throws Exception {
         Long memberId = 1L;
         MemberPatchDto patchDto = new MemberPatchDto(
-                "홍길동",
-                "hgd@gmail.com",
                 "010-1234-5678",
                 "hgd123"
         );
@@ -219,6 +174,7 @@ public class MemberControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         actions
@@ -231,9 +187,6 @@ public class MemberControllerTest {
                         ),
                         requestFields(
                                 List.of(
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"),
                                         fieldWithPath("phone").type(JsonFieldType.STRING).description("휴대폰 번호"),
                                         fieldWithPath("nickname").type(JsonFieldType.STRING).description("별명")
                                 )
@@ -242,6 +195,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void deleteMemberTest() throws Exception {
         Long memberId = 1L;
         doNothing().when(memberService).deleteMember(Mockito.anyLong());
@@ -250,6 +204,7 @@ public class MemberControllerTest {
                 delete("/api/v1/member/{memberId}", memberId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         );
 
         actions.andExpect(status().isNoContent())

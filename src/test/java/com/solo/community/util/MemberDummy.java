@@ -1,7 +1,6 @@
 package com.solo.community.util;
 
 import com.solo.community.member.dto.MemberPatchDto;
-import com.solo.community.member.dto.MemberPostDto;
 import com.solo.community.member.dto.MemberResponseDto;
 import com.solo.community.member.entity.Member;
 
@@ -16,12 +15,8 @@ public interface MemberDummy {
         return new Member(2L, "이순신", "lss@gmail.com", "010-8765-4321", "lss12", List.of("ROLE_USER"));
     }
 
-    static MemberPostDto createPostDto() {
-        return new MemberPostDto("홍길동", "hgd@gmail.com", "010-1234-5678", "hgb123");
-    }
-
     static MemberPatchDto createPatchDto() {
-        return new MemberPatchDto("홍길동", "hgd@gmail.com", "010-1234-5678", "hgb123");
+        return new MemberPatchDto("010-1234-5678", "hgb123");
     }
 
     static MemberResponseDto createdResponseDto1() {
