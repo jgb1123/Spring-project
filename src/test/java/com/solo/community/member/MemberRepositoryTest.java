@@ -73,10 +73,10 @@ public class MemberRepositoryTest {
                 .orElseThrow(() -> new IllegalArgumentException("Can not find member"));
         //when
         foundMember.changeInfo(modifiedMember);
-        Member foundchangedMember = memberRepository.findById(foundMember.getMemberId())
+        Member changedMember = memberRepository.findById(foundMember.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("Can not find member"));
         //then
-        assertThat(foundchangedMember.getEmail()).isEqualTo(modifiedMember.getEmail());
+        assertThat(changedMember.getNickname()).isEqualTo(modifiedMember.getNickname());
     }
 
     @Test

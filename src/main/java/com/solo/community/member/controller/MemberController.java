@@ -3,7 +3,6 @@ package com.solo.community.member.controller;
 import com.solo.community.dto.MultiResponseDto;
 import com.solo.community.dto.SingleResponseDto;
 import com.solo.community.member.dto.MemberPatchDto;
-import com.solo.community.member.dto.MemberPostDto;
 import com.solo.community.member.dto.MemberResponseDto;
 import com.solo.community.member.entity.Member;
 import com.solo.community.member.mapper.MemberMapper;
@@ -23,13 +22,6 @@ public class MemberController {
 
     private final MemberMapper memberMapper;
     private final MemberService memberService;
-
-    @PostMapping
-    public ResponseEntity postMember(@RequestBody MemberPostDto memberPostDto) {
-        Member member = memberMapper.memberPostDtoToMember(memberPostDto);
-        Member savedMember = memberService.createMember(member);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
 
     @GetMapping("/{memberId}")
     public ResponseEntity getMember(@PathVariable Long memberId) {

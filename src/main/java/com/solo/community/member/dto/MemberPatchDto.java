@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class MemberPatchDto {
-    private String name;
-    private String email;
     private String phone;
     private String nickname;
 }

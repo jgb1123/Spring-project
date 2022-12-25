@@ -1,7 +1,6 @@
 package com.solo.community.member.mapper;
 
 import com.solo.community.member.dto.MemberPatchDto;
-import com.solo.community.member.dto.MemberPostDto;
 import com.solo.community.member.dto.MemberResponseDto;
 import com.solo.community.member.entity.Member;
 import org.springframework.stereotype.Component;
@@ -11,20 +10,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class MemberMapper {
-    public Member memberPostDtoToMember(MemberPostDto memberPostDto) {
-        return Member.builder()
-                .memberId(0L)
-                .name(memberPostDto.getName())
-                .email(memberPostDto.getEmail())
-                .phone(memberPostDto.getPhone())
-                .nickname(memberPostDto.getNickname())
-                .build();
-    }
-
     public Member memberPatchDtoToMember(MemberPatchDto memberPatchDto) {
         return Member.builder()
-                .name(memberPatchDto.getName())
-                .email(memberPatchDto.getEmail())
                 .phone(memberPatchDto.getPhone())
                 .nickname(memberPatchDto.getNickname())
                 .build();
