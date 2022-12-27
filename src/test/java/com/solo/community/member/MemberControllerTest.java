@@ -7,6 +7,9 @@ import com.solo.community.member.dto.MemberResponseDto;
 import com.solo.community.member.entity.Member;
 import com.solo.community.member.mapper.MemberMapper;
 import com.solo.community.member.service.MemberService;
+import com.solo.community.security.config.SecurityConfig;
+import com.solo.community.security.jwt.JwtTokenizer;
+import com.solo.community.security.utils.CustomAuthorityUtils;
 import com.solo.community.util.MemberDummy;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -36,12 +40,12 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
-@MockBean(JpaMetamodelMappingContext.class)
+@Import(SecurityConfig.class)
+@MockBean({JpaMetamodelMappingContext.class, MemberService.class, JwtTokenizer.class, CustomAuthorityUtils.class})
 @AutoConfigureRestDocs
 public class MemberControllerTest {
     @Autowired
@@ -58,7 +62,6 @@ public class MemberControllerTest {
 
 
     @Test
-    @WithMockUser
     public void getMemberTest() throws Exception {
         Long memberId = 1L;
         MemberResponseDto responseDto =
@@ -104,7 +107,6 @@ public class MemberControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void getMembersTest() throws Exception {
         int page = 1;
         int size = 10;
@@ -174,7 +176,6 @@ public class MemberControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
-                        .with(csrf())
         );
 
         actions
@@ -204,7 +205,6 @@ public class MemberControllerTest {
                 delete("/api/v1/member/{memberId}", memberId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
         );
 
         actions.andExpect(status().isNoContent())
