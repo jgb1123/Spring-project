@@ -8,6 +8,10 @@ import com.solo.community.comment.dto.CommentResponseDto;
 import com.solo.community.comment.entity.Comment;
 import com.solo.community.comment.mapper.CommentMapper;
 import com.solo.community.comment.service.CommentService;
+import com.solo.community.member.service.MemberService;
+import com.solo.community.security.config.SecurityConfig;
+import com.solo.community.security.jwt.JwtTokenizer;
+import com.solo.community.security.utils.CustomAuthorityUtils;
 import com.solo.community.util.CommentDummy;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -37,11 +42,11 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentController.class)
-@MockBean(JpaMetamodelMappingContext.class)
+@Import(SecurityConfig.class)
+@MockBean({JpaMetamodelMappingContext.class, MemberService.class, JwtTokenizer.class, CustomAuthorityUtils.class})
 @AutoConfigureRestDocs
 public class CommentControllerTest {
     @Autowired
@@ -74,7 +79,6 @@ public class CommentControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
-                        .with(csrf())
         );
 
         actions.andExpect(status().isCreated())
@@ -93,7 +97,6 @@ public class CommentControllerTest {
     }
 
     @Test
-    @WithMockUser
     void getCommentsTest() throws Exception {
         //given
         Long boardId = 1L;
@@ -168,7 +171,6 @@ public class CommentControllerTest {
                 patch("/api/v1/comment/{commentId}", commentId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
                         .content(content)
         );
         //then
@@ -198,7 +200,6 @@ public class CommentControllerTest {
                 delete("/api/v1/comment/{commentId}", commentId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
         );
         //then
         actions.andExpect(status().isNoContent())

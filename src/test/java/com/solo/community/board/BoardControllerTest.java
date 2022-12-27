@@ -8,6 +8,10 @@ import com.solo.community.board.dto.BoardResponseDto;
 import com.solo.community.board.entity.Board;
 import com.solo.community.board.mapper.BoardMapper;
 import com.solo.community.board.service.BoardService;
+import com.solo.community.member.service.MemberService;
+import com.solo.community.security.config.SecurityConfig;
+import com.solo.community.security.jwt.JwtTokenizer;
+import com.solo.community.security.utils.CustomAuthorityUtils;
 import com.solo.community.util.BoardDummy;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,11 +29,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
@@ -37,12 +47,12 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BoardController.class)
-@MockBean(JpaMetamodelMappingContext.class)
+@Import(SecurityConfig.class)
+@MockBean({JpaMetamodelMappingContext.class, MemberService.class, JwtTokenizer.class, CustomAuthorityUtils.class})
 @AutoConfigureRestDocs
 public class BoardControllerTest {
     @Autowired
@@ -72,7 +82,6 @@ public class BoardControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
-                        .with(csrf())
         );
 
         actions
@@ -90,7 +99,6 @@ public class BoardControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void getBoardTest() throws Exception {
         Long boardId = 1L;
         BoardResponseDto boardResponseDto = BoardDummy.createdResponseDto1();
@@ -103,7 +111,6 @@ public class BoardControllerTest {
                 get("/api/v1/board/{boardId}", boardId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
         );
 
         actions.andExpect(status().isOk())
@@ -132,7 +139,6 @@ public class BoardControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void getBoardsTest() throws Exception {
         int page = 1;
         int size = 10;
@@ -203,7 +209,6 @@ public class BoardControllerTest {
                 patch("/api/v1/board/{boardId}", boardId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
                         .content(content)
         );
 
@@ -233,7 +238,6 @@ public class BoardControllerTest {
                 delete("/api/v1/board/{boardId}", boardId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
         );
 
         actions.andExpect(status().isNoContent())
