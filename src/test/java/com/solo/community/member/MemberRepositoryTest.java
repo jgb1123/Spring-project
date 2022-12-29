@@ -50,20 +50,6 @@ public class MemberRepositoryTest {
     }
 
     @Test
-    void findMembers() {
-        //given
-        Member member1 = MemberDummy.createMember1();
-        Member member2 = MemberDummy.createMember2();
-        Member savedMember1 = memberRepository.save(member1);
-        Member savedMember2 = memberRepository.save(member2);
-        //when
-        Page<Member> pageMembers = memberRepository.findAll(PageRequest.of(0, 10, Sort.by("nickname").ascending()));
-        List<Member> content = pageMembers.getContent();
-        //then
-        assertThat(content).contains(savedMember1);
-    }
-
-    @Test
     void updateMembers() {
         //given
         Member member1 = MemberDummy.createMember1();

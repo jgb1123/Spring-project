@@ -13,6 +13,7 @@ import com.solo.community.security.config.SecurityConfig;
 import com.solo.community.security.jwt.JwtTokenizer;
 import com.solo.community.security.utils.CustomAuthorityUtils;
 import com.solo.community.util.BoardDummy;
+import com.solo.community.util.WithAuthMember;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +69,8 @@ public class BoardControllerTest {
     private Gson gson;
 
     @Test
-    @WithMockUser
-    public void postBoardTest() throws Exception {
+    @WithAuthMember(email = "hgd@gmail.com", roles = {"ADMIN", "USER"})
+    void postBoardTest() throws Exception {
         BoardPostDto boardPostDto = BoardDummy.createPostDto();
         String content = gson.toJson(boardPostDto);
         given(boardMapper.boardPostDtoToBoard(Mockito.any(BoardPostDto.class)))
@@ -99,7 +100,7 @@ public class BoardControllerTest {
     }
 
     @Test
-    public void getBoardTest() throws Exception {
+    void getBoardTest() throws Exception {
         Long boardId = 1L;
         BoardResponseDto boardResponseDto = BoardDummy.createdResponseDto1();
         given(boardService.findBoard(boardId))
@@ -139,7 +140,7 @@ public class BoardControllerTest {
     }
 
     @Test
-    public void getBoardsTest() throws Exception {
+    void getBoardsTest() throws Exception {
         int page = 1;
         int size = 10;
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
@@ -197,8 +198,8 @@ public class BoardControllerTest {
     }
 
     @Test
-    @WithMockUser
-    public void patchBoardTest() throws Exception {
+    @WithAuthMember(email = "hgd@gmail.com", roles = {"ADMIN", "USER"})
+    void patchBoardTest() throws Exception {
         Long boardId = 1L;
         BoardPatchDto boardPatchDto = BoardDummy.createPatchDto();
         String content = gson.toJson(boardPatchDto);
@@ -229,8 +230,8 @@ public class BoardControllerTest {
     }
 
     @Test
-    @WithMockUser
-    public void deleteBoardTest() throws Exception {
+    @WithAuthMember(email = "hgd@gmail.com", roles = {"ADMIN", "USER"})
+    void deleteBoardTest() throws Exception {
         Long boardId = 1L;
         doNothing().when(boardService).deleteBoard(Mockito.anyLong(), Mockito.anyString());
 

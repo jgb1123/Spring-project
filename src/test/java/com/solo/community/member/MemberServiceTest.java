@@ -52,26 +52,12 @@ public class MemberServiceTest {
     public void findMemberTest() {
         //given
         Member member1 = MemberDummy.createMember1();
-        given(memberRepository.findById(Mockito.anyLong()))
+        given(memberRepository.findByEmail(Mockito.anyString()))
                 .willReturn(Optional.of(member1));
         //when
-        Member foundMember = memberService.findMember(1L);
+        Member foundMember = memberService.findMember("hgd@gmail.com");
         //then
         assertThat(member1.getEmail()).isEqualTo(foundMember.getEmail());
-    }
-
-    @Test
-    public void findMembersTest() {
-        //given
-        Member member1 = MemberDummy.createMember1();
-        Member member2 = MemberDummy.createMember2();
-        given(memberRepository.findAll(PageRequest.of(0, 10, Sort.by("nickname").ascending())))
-                .willReturn(new PageImpl<>(List.of(member1, member2), PageRequest.of(0, 10, Sort.by("nickname").ascending()), 2));
-        //when
-        Page<Member> pageMembers = memberService.findMembers(1, 10);
-        //then
-        assertThat(member1.getEmail()).isEqualTo(pageMembers.getContent().get(0).getEmail());
-        assertThat(member2.getEmail()).isEqualTo(pageMembers.getContent().get(1).getEmail());
     }
 
     @Test
@@ -79,10 +65,10 @@ public class MemberServiceTest {
         //given
         Member member1 = MemberDummy.createMember1();
         Member modifiedMember = MemberDummy.createMember2();
-        given(memberRepository.findById(Mockito.anyLong()))
+        given(memberRepository.findByEmail(Mockito.anyString()))
                 .willReturn(Optional.of(member1));
         //when
-        Member updatedMember = memberService.updateMember(1L, modifiedMember);
+        Member updatedMember = memberService.updateMember("hgd@gmail.com", modifiedMember);
 
         //then
         assertThat(modifiedMember.getNickname()).isEqualTo(updatedMember.getNickname());

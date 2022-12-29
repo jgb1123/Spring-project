@@ -30,25 +30,19 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public Member findMember(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    public Member findMember(String email) {
+        return findVerifiedMember(email);
     }
 
-    public Page<Member> findMembers(int page, int size) {
-        return memberRepository.findAll(PageRequest.of(page-1, size,
-                Sort.by("nickname").ascending()));
-    }
-
-    public Member updateMember(Long memberId, Member modifiedMember) {
-        Member foundMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    public Member updateMember(String email, Member modifiedMember) {
+        Member foundMember = findVerifiedMember(email);
         foundMember.changeInfo(modifiedMember);
         return foundMember;
     }
 
-    public void deleteMember(Long memberId) {
-        memberRepository.deleteById(memberId);
+    public void deleteMember(String email) {
+        Member foundMember = findVerifiedMember(email);
+        memberRepository.delete(foundMember);
     }
 
     public Member findVerifiedMember(String email) {

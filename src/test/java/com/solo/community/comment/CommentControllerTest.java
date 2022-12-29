@@ -13,6 +13,7 @@ import com.solo.community.security.config.SecurityConfig;
 import com.solo.community.security.jwt.JwtTokenizer;
 import com.solo.community.security.utils.CustomAuthorityUtils;
 import com.solo.community.util.CommentDummy;
+import com.solo.community.util.WithAuthMember;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class CommentControllerTest {
     private Gson gson;
 
     @Test
-    @WithMockUser
+    @WithAuthMember(email = "hgd@gmail.com", roles = {"ADMIN", "USER"})
     void postCommentTest() throws Exception {
         //given
         Long boardId = 1L;
@@ -157,7 +158,7 @@ public class CommentControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithAuthMember(email = "hgd@gmail.com", roles = {"ADMIN", "USER"})
     void patchCommentTest() throws Exception {
         //given
         Long commentId = 1L;
@@ -190,7 +191,7 @@ public class CommentControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithAuthMember(email = "hgd@gmail.com", roles = {"ADMIN", "USER"})
     void deleteCommentTest() throws Exception {
         //given
         Long commentId = 1L;
