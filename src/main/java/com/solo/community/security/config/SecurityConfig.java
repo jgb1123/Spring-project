@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers(HttpMethod.GET, "/api/v1/member").hasAnyRole("ADMIN", "USER")
                         .antMatchers(HttpMethod.PATCH, "/api/v1/member/**").hasAnyRole("ADMIN", "USER")
                         .antMatchers(HttpMethod.DELETE, "/api/v1/member/**").hasAnyRole("ADMIN", "USER")
                         .antMatchers(HttpMethod.POST, "/api/v1/board").hasAnyRole("ADMIN", "USER")

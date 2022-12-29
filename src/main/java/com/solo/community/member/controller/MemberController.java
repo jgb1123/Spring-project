@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,37 +20,27 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member")
 public class MemberController {
-
     private final MemberMapper memberMapper;
     private final MemberService memberService;
 
-    @GetMapping("/{memberId}")
-    public ResponseEntity getMember(@PathVariable Long memberId) {
-        Member foundMember = memberService.findMember(memberId);
+    @GetMapping
+    public ResponseEntity getMember(@AuthenticationPrincipal String email) {
+        Member foundMember = memberService.findMember(email);
         MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(foundMember);
         return new ResponseEntity<>(new SingleResponseDto<>(memberResponseDto), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity getMembers(@RequestParam(required = false, defaultValue = "1") int page,
-                                     @RequestParam(required = false, defaultValue = "10") int size) {
-        Page<Member> pageMembers = memberService.findMembers(page, size);
-        List<Member> members = pageMembers.getContent();
-        List<MemberResponseDto> memberResponseDtos = memberMapper.membersToMemberResponseDtos(members);
-        return new ResponseEntity<>(new MultiResponseDto<>(memberResponseDtos, pageMembers), HttpStatus.OK);
-    }
-
-    @PatchMapping("/{memberId}")
-    public ResponseEntity patchMember(@PathVariable Long memberId,
-                                      @RequestBody MemberPatchDto memberPatchDto) {
+    @PatchMapping
+    public ResponseEntity patchMember(@RequestBody MemberPatchDto memberPatchDto,
+                                      @AuthenticationPrincipal String email) {
         Member modifiedMember = memberMapper.memberPatchDtoToMember(memberPatchDto);
-        memberService.updateMember(memberId, modifiedMember);
+        memberService.updateMember(email, modifiedMember);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{memberId}")
-    public ResponseEntity deleteMember(@PathVariable Long memberId) {
-        memberService.deleteMember(memberId);
+    @DeleteMapping
+    public ResponseEntity deleteMember(@AuthenticationPrincipal String email) {
+        memberService.deleteMember(email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

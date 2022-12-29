@@ -19,11 +19,11 @@ public interface MemberDummy {
         return new MemberPatchDto("010-1234-5678", "hgb123");
     }
 
-    static MemberResponseDto createdResponseDto1() {
+    static MemberResponseDto createResponseDto1() {
         return new MemberResponseDto(1L, "홍길동", "hgd@gmail.com", "010-1234-5678", "hgb123");
     }
 
-    static MemberResponseDto createdResponseDto2() {
+    static MemberResponseDto createResponseDto2() {
         return new MemberResponseDto(2L, "이순신", "lss@gmail.com", "010-8765-4321", "lss12");
     }
 

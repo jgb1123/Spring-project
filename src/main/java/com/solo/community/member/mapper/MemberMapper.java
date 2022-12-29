@@ -26,11 +26,4 @@ public class MemberMapper {
                 .nickname(member.getNickname())
                 .build();
     }
-
-    public List<MemberResponseDto> membersToMemberResponseDtos(List<Member> members) {
-        return members
-                .stream()
-                .map(member -> memberToMemberResponseDto(member))
-                .collect(Collectors.toList());
-    }
 }
