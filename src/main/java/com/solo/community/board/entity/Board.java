@@ -55,4 +55,7 @@ public class Board extends BaseTimeEntity {
         if(board.getBoardContent() != null) this.boardContent = board.getBoardContent();
     }
 
+    public void increaseView() {
+        this.view++;
+    }
 }
