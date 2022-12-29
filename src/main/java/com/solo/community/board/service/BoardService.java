@@ -28,7 +28,9 @@ public class BoardService {
     }
 
     public Board findBoard(Long boardId) {
-        return findVerifiedBoard(boardId);
+        Board foundBoard = findVerifiedBoard(boardId);
+        foundBoard.increaseView();
+        return foundBoard;
     }
 
     public Page<Board> findBoards(int page, int size) {
