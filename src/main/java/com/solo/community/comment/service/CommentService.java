@@ -25,6 +25,7 @@ public class CommentService {
 
     public Comment createComment(String email, Long boardId, Comment comment) {
         Member foundMember = memberService.findVerifiedMember(email);
+        checkNickname(foundMember);
         Board foundBoard = boardService.findVerifiedBoard(boardId);
         comment.changeMember(foundMember);
         comment.changeBoard(foundBoard);
@@ -59,6 +60,12 @@ public class CommentService {
     private void emailConfirm(String email, Comment foundComment) {
         if(!foundComment.getMember().getEmail().equals(email)) {
             throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_COMMENT);
+        }
+    }
+
+    private void checkNickname(Member foundMember) {
+        if(foundMember.getNickname() == null) {
+            throw new BusinessLogicException(ExceptionCode.CANNOT_CREATE_COMMENT);
         }
     }
 }
