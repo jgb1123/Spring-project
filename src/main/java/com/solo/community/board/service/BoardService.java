@@ -23,6 +23,7 @@ public class BoardService {
 
     public Board createBoard(String email, Board board) {
         Member foundMember = memberService.findVerifiedMember(email);
+        checkNickname(foundMember);
         board.changeMember(foundMember);
         return boardRepository.save(board);
     }
@@ -60,6 +61,12 @@ public class BoardService {
     private void emailConfirm(String email, Board foundBoard) {
         if(!foundBoard.getMember().getEmail().equals(email)) {
             throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_BOARD);
+        }
+    }
+
+    private void checkNickname(Member foundMember) {
+        if(foundMember.getNickname() == null) {
+            throw new BusinessLogicException(ExceptionCode.CANNOT_CREATE_BOARD);
         }
     }
 }

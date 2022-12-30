@@ -7,8 +7,10 @@ public enum ExceptionCode {
     MEMBER_EXISTS(409, "Member exists"),
     BOARD_NOT_FOUND(404, "Board not found"),
     CANNOT_CHANGE_BOARD(403, "Board can not change"),
+    CANNOT_CREATE_BOARD(403, "Board can not create"),
     COMMENT_NOT_FOUND(404, "Comment not found"),
-    CANNOT_CHANGE_COMMENT(403, "Comment can not change");
+    CANNOT_CHANGE_COMMENT(403, "Comment can not change"),
+    CANNOT_CREATE_COMMENT(403, "Comment can not create");
 
     @Getter
     private int status;
