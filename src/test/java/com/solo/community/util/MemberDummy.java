@@ -8,24 +8,41 @@ import java.util.List;
 
 public interface MemberDummy {
     static Member createMember1() {
-        return new Member(1L, "홍길동", "hgd@gmail.com", "010-1234-5678", "hgb123", List.of("ROLE_USER"));
+        return Member.builder()
+                .memberId(1L)
+                .name("홍길동")
+                .email("hgd@gmail.com")
+                .phone("010-1234-5678")
+                .nickname("hgd123")
+                .roles(List.of("ROLE_USER"))
+                .build();
     }
 
     static Member createMember2() {
-        return new Member(2L, "이순신", "lss@gmail.com", "010-8765-4321", "lss12", List.of("ROLE_USER"));
+        return Member.builder()
+                .memberId(2L)
+                .name("이순신")
+                .email("lss@gmail.com")
+                .phone("010-8765-4321")
+                .nickname("lss123")
+                .roles(List.of("ROLE_USER"))
+                .build();
     }
 
     static MemberPatchDto createPatchDto() {
-        return new MemberPatchDto("010-1234-5678", "hgb123");
+        return MemberPatchDto.builder()
+                .phone("010-1234-5678")
+                .nickname("hgd123")
+                .build();
     }
 
     static MemberResponseDto createResponseDto1() {
-        return new MemberResponseDto(1L, "홍길동", "hgd@gmail.com", "010-1234-5678", "hgb123");
+        return MemberResponseDto.builder()
+                .memberId(1L)
+                .name("홍길동")
+                .email("hgd@gmail.com")
+                .phone("010-1234-5678")
+                .nickname("hgd123")
+                .build();
     }
-
-    static MemberResponseDto createResponseDto2() {
-        return new MemberResponseDto(2L, "이순신", "lss@gmail.com", "010-8765-4321", "lss12");
-    }
-
-
 }
