@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source:  /
-    destination: /home/ec2-user/app/v1/zip/
+    destination: /home/ec2-user/app/v1/solo-project
     overwrite: yes
 
 permissions:
@@ -17,6 +17,6 @@ hooks:
       timeout: 60
       runas: ec2-user
   ApplicationStart:
-    - location: scripts/deploy.sh
+    - location: scripts/start.sh
       timeout: 60
       runas: ec2-user
