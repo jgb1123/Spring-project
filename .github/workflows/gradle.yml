@@ -28,7 +28,45 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
+
+    - run: touch ./src/main/resources/application.properties
+    - run: echo "${{ secrets.MAIN_APPLICATION }} > ./src/main/resources/application.properties
+    - run: cat ./src/main/resources/application.properties
+
+    - run: touch ./src/main/resources/application.properties
+    - run: echo "${{ secrets.TEST_APPLICATION }} > ./src/test/resources/application.properties
+    - run: cat ./src/test/resources/application.properties
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: build
+    - name: Make zip file
+      run: zip -r ./springboot-my-community-app.zip .
+      shell: bash
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Upload to S3
+      run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./springboot-my-community-app.zip s3://springboot-my-community-app-build/springboot-my-community-app.zip
+
+    - name: Deploy
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        aws deploy create-deployment \
+        --application-name springboot-my-community-app \
+        --deployment-group-name springboot-my-community-app \
+        --file-exists-behavior OVERWRITE \
+        --s3-location bucket=springboot-my-community-app-build,bundleType=zip,key=springboot-my-community-app.zip \
+        --region ${{ secrets.AWS_REGION }}
+        
