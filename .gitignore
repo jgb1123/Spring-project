@@ -68,5 +68,6 @@ out/
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
-# for Travis CI
-!.travis.yml
+# for appspec.yml
+!appspec.yml
+
