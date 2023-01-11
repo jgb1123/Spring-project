@@ -33,6 +33,14 @@ jobs:
     - run: echo "${{ secrets.MAIN_APPLICATION }}" > ./src/main/resources/application.properties
     - run: cat ./src/main/resources/application.properties
 
+    - run: touch ./src/main/resources/application-real1.properties
+    - run: echo "${{ secrets.MAIN_APPLICATION_REAL1 }}" > ./src/main/resources/application-real1.properties
+    - run: cat ./src/main/resources/application-real1.properties
+
+    - run: touch ./src/main/resources/application-real2.properties
+    - run: echo "${{ secrets.MAIN_APPLICATION_REAL2 }}" > ./src/main/resources/application-real2.properties
+    - run: cat ./src/main/resources/application-real2.properties
+
     - run: mkdir -p ./src/test/resources
     - run: touch ./src/test/resources/application.properties
     - run: echo "${{ secrets.TEST_APPLICATION }}" > ./src/test/resources/application.properties
