@@ -24,6 +24,9 @@
   * Spring boot2는 8082포트로 실행합니다.
   * 만약 nginx가 spring boot1과 연결되어 있고 신규 배포가 필요한 상황이면, spring boot2로 배포를 진행 한 후 nginx가 spring boot2를 바라보도록 reload하면 됩니다.
 
+![배포 flow](https://user-images.githubusercontent.com/104135638/212538388-8374a96b-9b42-48e9-bf1e-bd8591e08e3d.PNG)
+
+
 ### 3. Test Code 작성
 * 테스트 코드에 익숙해지기 위해 Spring REST Docs를 이용하여 테스트기반의 REST API 문서화를 진행 하였습니다.
 * 단위테스트들을 진행하여 앱의 안정성을 높였습니다.
