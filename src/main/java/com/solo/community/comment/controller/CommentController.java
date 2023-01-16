@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -24,8 +26,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/{boardId}")
-    public ResponseEntity postComment(@PathVariable Long boardId,
-                                      @RequestBody CommentPostDto commentPostDto,
+    public ResponseEntity postComment(@Positive @PathVariable Long boardId,
+                                      @Valid @RequestBody CommentPostDto commentPostDto,
                                       @AuthenticationPrincipal String email) {
         Comment comment = commentMapper.commentPostDtoToComment(commentPostDto);
         Comment savedComment = commentService.createComment(email, boardId, comment);
@@ -33,9 +35,9 @@ public class CommentController {
     }
 
     @GetMapping("/{boardId}")
-    public ResponseEntity getComments(@PathVariable Long boardId,
-                                      @RequestParam int page,
-                                      @RequestParam int size) {
+    public ResponseEntity getComments(@Positive @PathVariable Long boardId,
+                                      @Positive @RequestParam int page,
+                                      @Positive @RequestParam int size) {
         Page<Comment> pageComments = commentService.findComments(boardId, page, size);
         List<Comment> comments = pageComments.getContent();
         List<CommentResponseDto> commentResponseDtos = commentMapper.commentsToCommentResponseDtos(comments);
@@ -43,8 +45,8 @@ public class CommentController {
     }
 
     @PatchMapping("/{commentId}")
-    public ResponseEntity patchComment(@PathVariable Long commentId,
-                                       @RequestBody CommentPatchDto commentPatchDto,
+    public ResponseEntity patchComment(@Positive @PathVariable Long commentId,
+                                       @Valid @RequestBody CommentPatchDto commentPatchDto,
                                        @AuthenticationPrincipal String email) {
         Comment modifiedComment = commentMapper.commentPatchDtoToComment(commentPatchDto);
         commentService.updateComment(email, commentId, modifiedComment);
@@ -52,7 +54,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity deleteComment(@PathVariable Long commentId,
+    public ResponseEntity deleteComment(@Positive @PathVariable Long commentId,
                                         @AuthenticationPrincipal String email) {
         commentService.deleteComment(email, commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
